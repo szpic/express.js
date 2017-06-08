@@ -6,6 +6,7 @@ import * as db from './db';
 import { Item } from './shared/Item';
 import { Login } from './shared/Login';
 import { User } from './shared/User';
+import { Category } from './shared/Category';
 
 var app = express();
 
@@ -60,6 +61,12 @@ app.get('/items/', (req, res) => {
     res.send(JSON.stringify(produts));
   });
 });
+
+app.get('/categories/', (req, res)=>{
+  db.getCategories(categories=>{
+    res.send(JSON.stringify(categories));
+  })
+})
 
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!')
