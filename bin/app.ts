@@ -56,6 +56,12 @@ app.get('/users/', (req, res) => {
   });
 });
 
+app.get('/items/:category', (req, res) =>{
+  db.getProductsFromCategory(req.params.category, products => {
+    res.send(JSON.stringify(products))
+  })
+})
+
 app.get('/items/', (req, res) => {
   db.getProducts(produts => {
     res.send(JSON.stringify(produts));

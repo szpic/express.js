@@ -41,6 +41,18 @@ export function getProducts(callback: (item: Item) => void) {
         });
     });
 }
+
+export function getProductsFromCategory(categoryName: string, callback: (item: Item) => void) {
+    client.connect(url,(err, db)=>{
+        assert.equal(null,err);
+        db.collection('products').find({category: categoryName},{description:1, price:1, count:1, _id:0, category:1}).toArray((err, item) =>{
+            assert.equal(null, err);
+            db.close();
+            callback(item);
+        });
+    });
+}
+
 export function getCategories(callback: (category: Category) => void){
     client.connect(url,(err, db)=>{
         assert.equal(null, err);
