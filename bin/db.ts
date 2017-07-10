@@ -5,6 +5,7 @@ import { Item } from './shared/Item';
 import { Login } from './shared/Login';
 import { User } from './shared/User';
 import { Category } from './shared/Category';
+import { Transaction } from './shared/transaction';
 
 var client = mongodb.MongoClient;
 
@@ -17,6 +18,18 @@ export function getUser(id: string, callback: (user: User) => void) {
             assert.equal(null, err);
             db.close();
             callback(user);
+        });
+    });
+}
+
+export function insertTransaction(ta: Transaction, callback: (result: boolean)=>void) {
+    client.connect(url,(err,db)=>{
+        assert.equal(null, err);
+        db.collection('transactions').insertOne(ta, function(err, result) {
+            assert.equal(err, null);
+            console.log("Inserted a document into the restaurants collection.");
+            db.close();
+            callback(true);
         });
     });
 }
@@ -45,7 +58,7 @@ export function getProducts(callback: (item: Item) => void) {
 export function getProductsFromCategory(categoryName: string, callback: (item: Item) => void) {
     client.connect(url,(err, db)=>{
         assert.equal(null,err);
-        db.collection('products').find({category: categoryName},{description:1, price:1, count:1, _id:0, category:1}).toArray((err, item) =>{
+        db.collection('products').find({category:categoryName},{description:1, price:1, count:1, _id:0, category:1}).toArray((err, item) =>{
             assert.equal(null, err);
             db.close();
             callback(item);

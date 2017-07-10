@@ -1,5 +1,6 @@
 import * as express from "express";
 import * as mongodb from "mongodb";
+import * as bodyParser from "body-parser";
 import * as routes from "./routes/index";
 import * as db from './db';
 
@@ -7,6 +8,7 @@ import { Item } from './shared/Item';
 import { Login } from './shared/Login';
 import { User } from './shared/User';
 import { Category } from './shared/Category';
+import { Transaction } from './shared/transaction';
 
 var app = express();
 
@@ -28,6 +30,9 @@ app.use(function (req, res, next) {
   // Pass to next layer of middleware
   next();
 });
+
+app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 app.get('/', routes.index);
 
@@ -72,6 +77,18 @@ app.get('/categories/', (req, res)=>{
   db.getCategories(categories=>{
     res.send(JSON.stringify(categories));
   })
+})
+
+app.post('/transaction/save/', (req, res)=>{
+  var ta = req.body.ta;
+  let login: Login = {status : false };
+  db.insertTransaction(ta, result=>{
+    if(result===true){
+      login.status=true;
+    }  
+    res.send(JSON.stringify(login));
+  })
+ 
 })
 
 app.listen(3000, function () {
